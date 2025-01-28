@@ -1,0 +1,30 @@
+Ecco il catalogo dei colori comuni con i valori RGB normalizzati tra 0 e 1:
+
+| **Colore**       | **Codice RGB Normalizzato**  |
+|------------------|-----------------------------|
+| Nero             | `(0, 0, 0)`                 |
+| Bianco           | `(1, 1, 1)`                 |
+| Rosso            | `(1, 0, 0)`                 |
+| Verde            | `(0, 1, 0)`                 |
+| Blu              | `(0, 0, 1)`                 |
+| Giallo           | `(1, 1, 0)`                 |
+| Ciano (Azzurro)  | `(0, 1, 1)`                 |
+| Magenta          | `(1, 0, 1)`                 |
+| Grigio Chiaro    | `(0.827, 0.827, 0.827)`     |
+| Grigio           | `(0.502, 0.502, 0.502)`     |
+| Grigio Scuro     | `(0.663, 0.663, 0.663)`     |
+| Marrone          | `(0.647, 0.165, 0.165)`  ROSA   |
+| Rosa             | `(1, 0.753, 0.796)`   NO      |
+| Arancione        | `(1, 0.647, 0)`  NO             |
+| Viola            | `(0.502, 0, 0.502)`         |
+| Verde Scuro      | `(0, 0.392, 0)`    NO         |
+| Blu Scuro        | `(0, 0, 0.545)`             |
+| Verde Oliva      | `(0.502, 0.502, 0)`         |
+| Oro              | `(1, 0.843, 0)`      NO       |
+| Argento          | `(0.753, 0.753, 0.753)`     |
+| Indaco           | `(0.294, 0, 0.510)`         |
+| Turchese         | `(0.251, 0.878, 0.816)`     |
+| Beige            | `(0.961, 0.961, 0.863)` NO    |
+| Azzurro Chiaro   | `(0.678, 0.847, 0.902)`     |
+
+In questo formato, ogni valore RGB (Red, Green, Blue) è normalizzato tra 0 e 1, dove 0 rappresenta il minimo (0 nel sistema tradizionale) e 1 il massimo (255 nel sistema RGB a 8 bit).
