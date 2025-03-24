@@ -238,9 +238,9 @@ def main():
     os.makedirs(save_dir_front, exist_ok=True)
     clear_directory(save_dir_front)
 
-    save_dir_hand = "camera_view_hand"
-    os.makedirs(save_dir_hand, exist_ok=True)
-    clear_directory(save_dir_hand)
+    # save_dir_hand = "camera_view_hand"
+    # os.makedirs(save_dir_hand, exist_ok=True)
+    # clear_directory(save_dir_hand)
 
     save_dir_side = "camera_view_side"
     os.makedirs(save_dir_side, exist_ok=True)
@@ -319,7 +319,7 @@ def main():
 
 
 
-            if count % 25 == 0:
+            if count % 25 == 0:    #it was at 25 (2.4 Hz) before 
                 index += 1
                 count = 0
 
@@ -332,7 +332,7 @@ def main():
                 for i in num_envs:
                 # Recuperare i dati dalla telecamera
                     rgb_image_front =  env.step(actions)[0]["rgbd"]["rgb_front"][i]
-                    rgb_image_hand =  env.step(actions)[0]["rgbd"]["rgb_hand"][i]
+                    # rgb_image_hand =  env.step(actions)[0]["rgbd"]["rgb_hand"][i]
                     rgb_image_side=  env.step(actions)[0]["rgbd"]["rgb_side"][i]
 
                             
@@ -345,7 +345,7 @@ def main():
 
                     # Salva l'immagine quando il target è raggiunto
                     save_image(rgb_image_front.cpu(),save_dir_front,index,i)
-                    save_image(rgb_image_hand.cpu(),save_dir_hand,index,i)
+                    # save_image(rgb_image_hand.cpu(),save_dir_hand,index,i)
                     save_image(rgb_image_side.cpu(),save_dir_side,index,i)
 
             count += 1

@@ -268,19 +268,19 @@ class CabinetSceneCfg(InteractiveSceneCfg):
         ),
     )
 
-    camera_side_bridge = CameraCfg(
-        prim_path="{ENV_REGEX_NS}/side_cam_Bridge",
+    camera_side = CameraCfg(
+        prim_path="{ENV_REGEX_NS}/Robot/side_cam",
         update_period=0.1,
         height=224,
         width=224,
         data_types=["rgb", "distance_to_image_plane"],
         spawn=sim_utils.PinholeCameraCfg(
-            focal_length=15.0, focus_distance=400.0, horizontal_aperture=20.955, clipping_range=(0.1, 1.0e5)
+            focal_length=24.0, focus_distance=400.0, horizontal_aperture=20.955, clipping_range=(0.1, 1.0e5)
         ),
         offset=CameraCfg.OffsetCfg(
-            pos=(-0.3, 0.3, 0.5),  
-            rot=(0.5, 0.3, -0.6, -1.0),
-            convention="opengl",
+            pos=(0.0, -1.5, 0.4),  
+            rot=(1.0, 0.0, 0.0, 0.715),
+            convention="world",
         ),
     )
 
@@ -358,7 +358,7 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
 
 
     # TEST PER VERIFICARE LA TRAIETTORIA DI OPENVLA 
-    with open('trajectory_test_open_drawer.json', 'r') as file:
+    with open('trajectory_drawer_IN.json', 'r') as file:
         data = json.load(file)
         traj = data['trajectory_0']
     

@@ -10,15 +10,15 @@ from omni.isaac.lab.utils import configclass
 from omni.isaac.lab.sensors import CameraCfg
 
 # from . import joint_pos_env_cfg
-# from . import joint_pos_env_mattia_pick_cfg    #PICK THE CUBOID
-from . import joint_pos_env_mattia_stack_cfg  #PLACE THE COKE CAN IN THE PAN
+from . import joint_pos_env_mattia_pick_cfg    #PICK THE CUBOID
+# from . import joint_pos_env_mattia_stack_cfg  #PLACE THE COKE CAN IN THE PAN
 
 
 from omni.isaac.lab_assets.franka import FRANKA_PANDA_HIGH_PD_CFG  # isort: skip
 
 
 @configclass
-class FrankaCubeLiftEnvCfg(joint_pos_env_mattia_stack_cfg.FrankaCubeLiftEnvCfg):    #CAMBIARE QUI IN BASE ALL'ENVIRONEMNT CHE SI VUOLE CREARE
+class FrankaCubeLiftEnvCfg(joint_pos_env_mattia_pick_cfg.FrankaCubeLiftEnvCfg):    #CAMBIARE QUI IN BASE ALL'ENVIRONEMNT CHE SI VUOLE CREARE
     def __post_init__(self):
         # post init of parent
         super().__post_init__()

@@ -60,8 +60,8 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
 
         # #cuboide
         # self.scene.object_3 = RigidObjectCfg(
-        #     prim_path="{ENV_REGEX_NS}/Cubo",
-        #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.33, -0.09, 0.1)),    
+        #     prim_path="{ENV_REGEX_NS}/Cuboide",
+        #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.332, 0.281, 0.1)),    
         #     spawn=UsdFileCfg(
         #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/cube.usd",    # "/home/jonatha/IsaacLab/usd_files_mattia/cube.usd"  #f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
         #         scale=(0.0006, 0.0006, 0.001),            #(0.0006, 0.0006, 0.001)  #vogliamo un parallepipedo        #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
@@ -88,7 +88,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #banana test 
         self.scene.object_2 = RigidObjectCfg(
             prim_path="{ENV_REGEX_NS}/Banana",
-            init_state=RigidObjectCfg.InitialStateCfg(pos=(0.4, 0.2, 0.1), rot=(0.0, 0.0, 1.0, 1.0)),
+            init_state=RigidObjectCfg.InitialStateCfg(pos=(0.4, -0.2, 0.1), rot=(0.0, 0.0, 1.0, 1.0)),
             spawn=sim_utils.UsdFileCfg(
                 usd_path="/home/jonatha/IsaacLab/usd_files_mattia/banana.usd",    # "/home/jonatha/IsaacLab/usd_files_mattia/cube.usd"  #f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
                 scale=(0.0006, 0.0006, 0.0006),     #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
@@ -107,7 +107,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #coke can 2 test 
         self.scene.object_3 = RigidObjectCfg(
             prim_path="{ENV_REGEX_NS}/CokeCan",
-            init_state=RigidObjectCfg.InitialStateCfg(pos=(0.502, -0.19, 0.1),rot=(0.0, 0.0, 0.0, 1.0)),
+            init_state=RigidObjectCfg.InitialStateCfg(pos=(0.442, 0.25, 0.1),rot=(0.0, 0.0, 0.0, 1.0)),
             spawn=sim_utils.UsdFileCfg(
                 usd_path="/home/jonatha/IsaacLab/usd_files_mattia/coke_can.usd",    # "/home/jonatha/IsaacLab/usd_files_mattia/cube.usd"  #f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
                 scale=(0.0004, 0.0004, 0.0004),     #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza
@@ -125,7 +125,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
 
 
 
-
+        #TENTATIVI PASSATI
 
         # #tovaglietta
         # self.scene.object_4 = RigidObjectCfg(
@@ -253,7 +253,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         marker_cfg.prim_path = "/Visuals/FrameTransformer"
         self.scene.ee_frame = FrameTransformerCfg(
             prim_path="{ENV_REGEX_NS}/Robot/panda_link0",  
-            debug_vis=False,
+            debug_vis=False,    #CAMBIARE IN TRUE PER VEDERE IL FRAME DEL ROBOT
             visualizer_cfg=marker_cfg,
             target_frames=[
                 FrameTransformerCfg.FrameCfg(

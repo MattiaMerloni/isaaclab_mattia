@@ -10,7 +10,7 @@ import tensorflow_datasets as tfds
 import tensorflow_hub as hub
 
 
-class Place300(tfds.core.GeneratorBasedBuilder):
+class Overall900(tfds.core.GeneratorBasedBuilder):
     """DatasetBuilder for example dataset."""
 
     VERSION = tfds.core.Version('1.0.0')
@@ -40,12 +40,12 @@ class Place300(tfds.core.GeneratorBasedBuilder):
                             encoding_format='png',
                             doc='Side camera RGB observation.',
                         ),
-                        'image_hand': tfds.features.Image(
-                            shape=(224, 224, 3),
-                            dtype=np.uint8,
-                            encoding_format='png',
-                            doc='Hand camera RGB observation.',
-                        ),      
+                        # 'image_hand': tfds.features.Image(
+                        #     shape=(224, 224, 3),
+                        #     dtype=np.uint8,
+                        #     encoding_format='png',
+                        #     doc='Hand camera RGB observation.',
+                        # ),      
                         'state': tfds.features.Tensor(
                             shape=(7,),
                             dtype=np.float32,                                  
@@ -122,13 +122,13 @@ class Place300(tfds.core.GeneratorBasedBuilder):
             # Estrai i dati
             images_front = data["images_front"]
             images_side = data["images_side"]
-            images_hand = data["images_hand"]
+            # images_hand = data["images_hand"]
             states = data["states"]
             actions = data["actions"]
             natural_language_instruction = data["natural_language"]
 
             # Verifica che le lunghezze dei dati corrispondano
-            if not (len(images_front) == len(images_side) == len(images_hand) == len(states) == len(actions)):
+            if not (len(images_front) == len(images_side)  == len(states) == len(actions)):    #ADD == len(images_hand)
                 raise ValueError("Mismatch tra le lunghezze di immagini, stati e azioni in `{episode_path}`")
 
             # Assemble episode
@@ -143,7 +143,7 @@ class Place300(tfds.core.GeneratorBasedBuilder):
                     'observation': {
                         'image_front': images_front[i],
                         'image_side': images_side[i],
-                        'image_hand': images_hand[i],
+                        # 'image_hand': images_hand[i],
                         'state': states[i],
                     },
                     'action': actions[i],

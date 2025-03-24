@@ -102,25 +102,25 @@ class ObjectTableSceneCfg(InteractiveSceneCfg):
         #     convention="opengl",
         # ),
         offset=CameraCfg.OffsetCfg(
-            pos=(1.8, 0.3, 0.8),  
-            rot=(1.0, 0.4, 0.45, 0.7), 
+            pos=(1.8, 0.3, 0.8),            #(1.8, 0.3, 0.8)     #pick_close: (1.5, 0.0, 0.8)
+            rot=(1.0, 0.4, 0.45, 0.7),      #(1.0, 0.4, 0.45, 0.7) #pick_close: (1.0, 0.3, 0.3, 0.7)
             convention="opengl",
         ),
     )
 
-    camera_hand = CameraCfg(
-        prim_path="{ENV_REGEX_NS}/Robot/panda_hand/hand_cam",
-        update_period=0.1,
-        height=224,
-        width=224,
-        data_types=["rgb", "distance_to_image_plane"],
-        spawn=sim_utils.PinholeCameraCfg(
-            focal_length=24.0, focus_distance=400.0, horizontal_aperture=20.955, clipping_range=(0.1, 1.0e5)
-        ),
-        offset=CameraCfg.OffsetCfg(
-            pos=(0.05, 0.0, 0.0), rot=(0.0, 1.0, 1.0, 0), convention="opengl"
-        ),
-    )
+    # camera_hand = CameraCfg(
+    #     prim_path="{ENV_REGEX_NS}/Robot/panda_hand/hand_cam",
+    #     update_period=0.1,
+    #     height=224,
+    #     width=224,
+    #     data_types=["rgb", "distance_to_image_plane"],
+    #     spawn=sim_utils.PinholeCameraCfg(
+    #         focal_length=24.0, focus_distance=400.0, horizontal_aperture=20.955, clipping_range=(0.1, 1.0e5)
+    #     ),
+    #     offset=CameraCfg.OffsetCfg(
+    #         pos=(0.05, 0.0, 0.0), rot=(0.0, 1.0, 1.0, 0), convention="opengl"
+    #     ),
+    # )
 
     camera_side = CameraCfg(
         prim_path="{ENV_REGEX_NS}/Table/side_cam",
@@ -146,11 +146,11 @@ def camera_rgb_front(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEn
     rgb = asset.data.output["rgb"]  # (num_env, 480, 640, 4), rgb
     return rgb
 
-def camera_rgb_hand(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("camera_hand")) -> torch.Tensor:
-    # extract the used quantities (to enable type-hinting)
-    asset = env.scene[asset_cfg.name]
-    rgb = asset.data.output["rgb"]  # (num_env, 480, 640, 4), rgb
-    return rgb
+# def camera_rgb_hand(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("camera_hand")) -> torch.Tensor:
+#     # extract the used quantities (to enable type-hinting)
+#     asset = env.scene[asset_cfg.name]
+#     rgb = asset.data.output["rgb"]  # (num_env, 480, 640, 4), rgb
+#     return rgb
 
 def camera_rgb_side(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("camera_side")) -> torch.Tensor:
     # extract the used quantities (to enable type-hinting)
@@ -164,14 +164,14 @@ def trajectory_pos_data(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = Scen
     # extract the used quantities (to enable type-hinting)
     asset = env.scene[asset_cfg.name]
     # traj_pos = asset.data.target_pos_w
-    traj_pos= asset.data.target_pos_source     # SISTEMA DI RIFERIMENTO GIUSTO: perchè se aumento gli environment non cambia nulla in termini di valori (il riferimento rimane sempre il centro del robot) 
+    traj_pos= asset.data.target_pos_source                                                                                      # SISTEMA DI RIFERIMENTO GIUSTO: perchè se aumento gli environment non cambia nulla in termini di valori (il riferimento rimane sempre il centro del robot) 
     return traj_pos
 
 def trajectory_rot_data(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("ee_frame")) -> torch.Tensor:
     # extract the used quantities (to enable type-hinting)
     asset = env.scene[asset_cfg.name]
     # traj_rot= asset.data.target_quat_w
-    traj_rot= asset.data.target_quat_source  # SISTEMA DI RIFERIMENTO GIUSTO: perchè se aumento gli environment non cambia nulla in termini di valori (il riferimento rimane sempre il centro del robot)
+    traj_rot= asset.data.target_quat_source                                                                                   # SISTEMA DI RIFERIMENTO GIUSTO: perchè se aumento gli environment non cambia nulla in termini di valori (il riferimento rimane sempre il centro del robot)
     return traj_rot
 
 
@@ -248,8 +248,8 @@ class ObservationsCfg:
         # observation terms (order preserved)
         rgb_front = ObsTerm(func=camera_rgb_front)
 
-        # observation terms (order preserved)
-        rgb_hand = ObsTerm(func=camera_rgb_hand)
+        # # observation terms (order preserved)
+        # rgb_hand = ObsTerm(func=camera_rgb_hand)
 
         # observation terms (order preserved)
         rgb_side = ObsTerm(func=camera_rgb_side)

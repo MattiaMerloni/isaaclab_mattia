@@ -268,7 +268,7 @@ def get_gripper_joint_ids(robot, gripper_joint_names):
     :return: List of joint IDs.
     """
     gripper_joint_ids = []
-    joint_names = robot.joint_names  # Ottenere i nomi dei giunti
+    joint_names = robot.joint_names                                                                          # Ottenere i nomi dei giunti
     for joint_name in gripper_joint_names:
         if joint_name in joint_names:
             gripper_joint_ids.append(joint_names.index(joint_name))
@@ -283,16 +283,16 @@ def set_gripper_state(robot, gripper_state):
     gripper_joint_names = ['panda_finger_joint1', 'panda_finger_joint2']
     gripper_joint_ids = get_gripper_joint_ids(robot, gripper_joint_names)
 
-    # Approxima il gripper_state all'intero più vicino
+    # It approximates the gripper_state to the nearest integer
     gripper_command = round(gripper_state.item())  
-    gripper_command = 1 if gripper_command == 1 else 0  # il gripper_commnand è settato ad 1 e quindi il gripper è aperto se il gripper_state è -1, altrimenti è chiuso
+    gripper_command = 1 if gripper_command == 1 else 0  #                                                     il gripper_commnand è settato ad 1 e quindi il gripper è aperto se il gripper_state è -1, altrimenti è chiuso
 
     gripper_commands = [gripper_command] * len(gripper_joint_ids)
 
-    # Converti i comandi in un tensor di PyTorch e trasferiscilo sulla GPU se necessario
+    # Convert the commands into a PyTorch tensor and transfer it to the GPU if necessary
     gripper_commands_tensor = torch.tensor(gripper_commands, dtype=torch.float32, device='cuda')
 
-    # Imposta i target di posizione dei giunti del gripper
+    # Set the joint position targets of the gripper
     robot.set_joint_position_target(gripper_commands_tensor, joint_ids=gripper_joint_ids)
 
 
