@@ -1,4 +1,4 @@
-'''    ./isaaclab.sh -p source/standalone/tutorials/06_mattia/attempt_7_openvla_check_stack_objects.py  --num_envs 1  '''
+'''    ./isaaclab.sh -p source/standalone/tutorials/06_mattia/attempt_7_openvla_check_place_objects.py  --num_envs 1  '''
 
 """ SCRIPT TO CHECK THE OPENVLA MODEL """
 
