@@ -46,7 +46,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     prim_path="{ENV_REGEX_NS}/Container",
         #     spawn=sim_utils.UsdFileCfg(
         #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/container.usd", 
-        #         scale=(0.01, 0.01, 0.013),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+        #         scale=(0.01, 0.01, 0.013),    
         #         rigid_props=sim_utils.RigidBodyPropertiesCfg(),
         #         mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
         #         collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=True),
@@ -62,7 +62,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.58, 0.22, 0.3), rot=(0.0, 1.0, 0.0, 1.0)),
         #     spawn=sim_utils.UsdFileCfg(
         #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/cube.usd",    # "/home/jonatha/IsaacLab/usd_files_mattia/cube.usd"  #f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
-        #         scale=(0.001, 0.0006, 0.0006),     #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+        #         scale=(0.001, 0.0006, 0.0006),     
         #         visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.0, 0.0, 1.0)),
         #         rigid_props=sim_utils.RigidBodyPropertiesCfg(
         #             solver_position_iteration_count=16,
@@ -75,7 +75,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     ),
         # )
 
-        #SE TOLGO IL PREVIEW SURFACE DAGLI OGGETTI CHE SCARICO DA SKETCHFAB ESSI MI SPAWNANO CON LA LORO LIVREA BASE 
+
 
         # #red cube
         # self.scene.object_2 = RigidObjectCfg(
@@ -83,7 +83,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.58, -0.22, 0.3)),
         #     spawn=sim_utils.UsdFileCfg(
         #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/cube.usd",    # "/home/jonatha/IsaacLab/usd_files_mattia/cube.usd"  #f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
-        #         scale=(0.0004, 0.0004, 0.0004),     #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+        #         scale=(0.0004, 0.0004, 0.0004),    
         #         visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(1.0, 0.0, 0.0)),
         #         rigid_props=sim_utils.RigidBodyPropertiesCfg(
         #             solver_position_iteration_count=16,
@@ -102,7 +102,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.342, -0.18, 0.1), rot=(0.0, 0.0, 1.0, 1.0)),
         #     spawn=sim_utils.UsdFileCfg(
         #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/banana.usd",    # "/home/jonatha/IsaacLab/usd_files_mattia/cube.usd"  #f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
-        #         scale=(0.0006, 0.0006, 0.0006),     #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+        #         scale=(0.0006, 0.0006, 0.0006),    
         #         rigid_props=sim_utils.RigidBodyPropertiesCfg(
         #             solver_position_iteration_count=16,
         #             solver_velocity_iteration_count=1,
@@ -120,7 +120,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.58, -0.22, 0.1)),
         #     spawn=sim_utils.UsdFileCfg(
         #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/apple_2.usd",    # "/home/jonatha/IsaacLab/usd_files_mattia/cube.usd"  #f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
-        #         scale=(0.0002, 0.0002, 0.0002),     #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+        #         scale=(0.0002, 0.0002, 0.0002),    
         #         rigid_props=sim_utils.RigidBodyPropertiesCfg(
         #             solver_position_iteration_count=16,
         #             solver_velocity_iteration_count=1,
@@ -138,10 +138,10 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     prim_path="{ENV_REGEX_NS}/Tovaglietta",
         #     spawn=sim_utils.UsdFileCfg(
         #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/parallelepipedo.usd", 
-        #         scale=(1.15, 1.5, 0.0006),  #(0.62, 1.5, 0.0006) per la mezza piastra
+        #         scale=(1.15, 1.5, 0.0006),  #(0.62, 1.5, 0.0006) for the half plate
         #         visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.0, 0.0, 1.0)),
         #     ),
-        #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.22, -0.01, 0.0), rot=(0.0, 0.0, 0.0, 1.0)),  #(0.75, -0.01, 0.05) per la mezza piastra
+        #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.22, -0.01, 0.0), rot=(0.0, 0.0, 0.0, 1.0)),  #(0.75, -0.01, 0.05) for the half plate
         # )
 
         # #tovaglietta 2 test
@@ -162,8 +162,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
             init_state=RigidObjectCfg.InitialStateCfg(pos=(0.36242, 0.311, 0.1),rot=(0.0, 0.0, 0.0, 1.0)),
             spawn=sim_utils.UsdFileCfg(
                 usd_path="/home/jonatha/IsaacLab/usd_files_mattia/coke_can.usd",    # "/home/jonatha/IsaacLab/usd_files_mattia/cube.usd"  #f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
-                scale=(0.0004, 0.0004, 0.0004),     #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza
-                rigid_props=sim_utils.RigidBodyPropertiesCfg(
+                scale=(0.0004, 0.0004, 0.0004),    
                     solver_position_iteration_count=16,
                     solver_velocity_iteration_count=1,
                     max_angular_velocity=1000.0,
@@ -180,7 +179,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
             init_state=RigidObjectCfg.InitialStateCfg(pos=(0.58, -0.22, 0.4), rot=(0.0, 0.0, 1.0, 1.0)),
             spawn=sim_utils.UsdFileCfg(
                 usd_path="/home/jonatha/IsaacLab/usd_files_mattia/firing_pan_2.usd",    # "/home/jonatha/IsaacLab/usd_files_mattia/cube.usd"  #f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
-                scale=(0.00017, 0.00017, 0.00017),     #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+                scale=(0.00017, 0.00017, 0.00017),    
                 rigid_props=sim_utils.RigidBodyPropertiesCfg(
                     solver_position_iteration_count=16,
                     solver_velocity_iteration_count=1,
@@ -206,8 +205,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
                     prim_path="{ENV_REGEX_NS}/Robot/panda_hand",
                     name="end_effector",
                     offset=OffsetCfg(
-                        pos=(0.0, 0.0, 0.0),    # ATTRAVERSO QUESTO COMANDO POSSO CAMBIARE IL PUNTO DA CUI PRENDO I VALORI DELLA TRAIETTORIA NEL GRIPPER # [0.0, 0.0, 0.1034]
-                        # DEVI DETERMINARE IL VALORE SPERIMENTALE CHE FA COMBACIARE I DUE SCRIPT (per ora va bene [0, -0.028, 0.01]) - era il valore quando il cubo era spawnato male 
+                        pos=(0.0, 0.0, 0.0),    # Through this command i can change the position by which i get the trajectory points # [0.0, 0.0, 0.1034]
                     ),
                 ),
             ],

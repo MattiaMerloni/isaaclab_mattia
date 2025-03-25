@@ -11,14 +11,14 @@ from omni.isaac.lab.sensors import CameraCfg
 
 # from . import joint_pos_env_cfg
 from . import joint_pos_env_mattia_pick_cfg    #PICK THE CUBOID
-# from . import joint_pos_env_mattia_stack_cfg  #PLACE THE COKE CAN IN THE PAN
+# from . import joint_pos_env_mattia_place_cfg  #PLACE THE COKE CAN IN THE PAN
 
 
 from omni.isaac.lab_assets.franka import FRANKA_PANDA_HIGH_PD_CFG  # isort: skip
 
 
 @configclass
-class FrankaCubeLiftEnvCfg(joint_pos_env_mattia_pick_cfg.FrankaCubeLiftEnvCfg):    #CAMBIARE QUI IN BASE ALL'ENVIRONEMNT CHE SI VUOLE CREARE
+class FrankaCubeLiftEnvCfg(joint_pos_env_mattia_pick_cfg.FrankaCubeLiftEnvCfg):    #Change here in accrodance with the task
     def __post_init__(self):
         # post init of parent
         super().__post_init__()
@@ -47,11 +47,11 @@ class FrankaCubeLiftEnvCfg(joint_pos_env_mattia_pick_cfg.FrankaCubeLiftEnvCfg): 
         #     spawn=sim_utils.PinholeCameraCfg(
         #         focal_length=24, 
         #         focus_distance=400.0, 
-        #         horizontal_aperture=30,  # Aumentare l'apertura orizzontale per un campo visivo più ampio
+        #         horizontal_aperture=30,  # Increase the aperture to get a wider field of view
         #         clipping_range=(0.1, 1.0e5)
         #     ),
         #     offset=CameraCfg.OffsetCfg(
-        #         pos=(1.3, 0.0, 0.7),  # Regolare la posizione per una migliore visione del tavolo
+        #         pos=(1.3, 0.0, 0.7),  # Define the position of the camera
         #         rot=(1.0, 0.4, 0.4, 0.65), 
         #         convention="opengl",
         #     ),

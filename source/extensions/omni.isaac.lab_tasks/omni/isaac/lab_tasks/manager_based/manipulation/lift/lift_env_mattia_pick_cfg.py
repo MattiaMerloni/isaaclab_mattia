@@ -74,7 +74,7 @@ class ObjectTableSceneCfg(InteractiveSceneCfg):
     plane = AssetBaseCfg(
         prim_path="/World/GroundPlane",
         init_state=AssetBaseCfg.InitialStateCfg(pos=(0, 0, -1.05)),
-        spawn=sim_utils.GroundPlaneCfg(),  #prima era solo GroundPlaneCfg() #CONTROLLARE 
+        spawn=sim_utils.GroundPlaneCfg(),  
     )
 
     # lights
@@ -93,7 +93,7 @@ class ObjectTableSceneCfg(InteractiveSceneCfg):
         spawn=sim_utils.PinholeCameraCfg(
             focal_length=24,   
             focus_distance=400.0, 
-            horizontal_aperture=20.955,  # Aumentare l'apertura orizzontale per un campo visivo più ampio
+            horizontal_aperture=20.955,  
             clipping_range=(0.1, 1.0e5)
         ),
         # offset=CameraCfg.OffsetCfg(
@@ -158,20 +158,20 @@ def camera_rgb_side(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEnt
     rgb = asset.data.output["rgb"]  # (num_env, 480, 640, 4), rgb
     return rgb
 
-# le trajectory pos e rot sono state definite in frame_transformer_data.py che si trova in source/extensions/omni.isaac.lab/omni/isaac/lab/sensors/frame_transformer
+# the trajectory pos and rot have been defined in frame_transformer_data.py which is located in source/extensions/omni.isaac.lab/omni/isaac/lab/sensors/frame_transformer
 
 def trajectory_pos_data(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("ee_frame")) -> torch.Tensor:
     # extract the used quantities (to enable type-hinting)
     asset = env.scene[asset_cfg.name]
     # traj_pos = asset.data.target_pos_w
-    traj_pos= asset.data.target_pos_source                                                                                      # SISTEMA DI RIFERIMENTO GIUSTO: perchè se aumento gli environment non cambia nulla in termini di valori (il riferimento rimane sempre il centro del robot) 
+    traj_pos= asset.data.target_pos_source                                                                                     
     return traj_pos
 
 def trajectory_rot_data(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("ee_frame")) -> torch.Tensor:
     # extract the used quantities (to enable type-hinting)
     asset = env.scene[asset_cfg.name]
     # traj_rot= asset.data.target_quat_w
-    traj_rot= asset.data.target_quat_source                                                                                   # SISTEMA DI RIFERIMENTO GIUSTO: perchè se aumento gli environment non cambia nulla in termini di valori (il riferimento rimane sempre il centro del robot)
+    traj_rot= asset.data.target_quat_source                                                                                  
     return traj_rot
 
 
@@ -191,7 +191,7 @@ class CommandsCfg:
         asset_name="robot",
         body_name=MISSING,  # will be set by agent env cfg
         resampling_time_range=(5.0, 5.0),
-        debug_vis=False,                                 # cambiando da True a False non si vedono più i sistemi di riferimento
+        debug_vis=False,                                 # changing to True will show the robot reference frame
         ranges=mdp.UniformPoseCommandCfg.Ranges(
             pos_x=(0.4, 0.6), pos_y=(-0.25, 0.25), pos_z=(0.25, 0.5), roll=(0.0, 0.0), pitch=(0.0, 0.0), yaw=(0.0, 0.0)
             # pos_x=(0.4, 1.0), pos_y=(-0.25, 0.25), pos_z=(0.25, 0.5), roll=(0.0, 0.0), pitch=(0.0, 0.0), yaw=(0.0, 0.0)
@@ -419,7 +419,7 @@ class LiftEnvCfg(ManagerBasedRLEnvCfg):
         self.decimation = 2
         self.episode_length_s = 5.0
         # simulation settings
-        self.sim.dt = 0.01  # 100Hz
+        self.sim.dt = 1 / 60  # 60Hz #It is the frequency of the control loop which in this case correspond to the iteration ferquency of the simulation
         self.sim.render_interval = self.decimation
 
         self.sim.physx.bounce_threshold_velocity = 0.2

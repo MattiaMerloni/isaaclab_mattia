@@ -1,12 +1,9 @@
-
-    # Usage
+# Usage
 '''    ./isaaclab.sh -p source/standalone/tutorials/06_mattia/attempt_7.py  --num_envs 1  '''
 
+# In this script, the robot initializes at every change of ee_goal, but I want it to perform continuous movement without resetting at every goal change
 
-#in questo script il robot si inizilizza ad ogni cambiamento del ee_goal ma io voglio che esso faccia un movimento continuo e non si resetta ad ogni cambio di goal
-
-#per ridurre il costo computazionale devo ottimizzare lo script 
-
+# To reduce computational cost, I need to optimize the script
 
 """Launch Isaac Sim Simulator first."""
 
@@ -53,14 +50,14 @@ from omni.isaac.lab_assets import FRANKA_PANDA_HIGH_PD_CFG  # isort:skip
 
 
 
-# questa funzione mi servirà quando gli darò in input le azioni predette da RT1
-# def euler_to_quaternion(roll, pitch, yaw):   #DA DECOMMENTARE
+# This function will be useful when I give it the predicted actions from RT1
+# def euler_to_quaternion(roll, pitch, yaw):   #TO UNCOMMENT
 #     """
 #     Convert Euler angles (roll, pitch, yaw) to a quaternion using PyTorch.
 #     """
 
 #     # Convert input angles to tensors
-#     roll = roll.clone().detach().float()      #devo usare clone().detach() perchè roll,pitch e yaw sono tensori di PyTorch e non posso fare operazioni direttamente su di essi
+#     roll = roll.clone().detach().float()      #I need to use clone().detach() because roll,pitch and yaw are PyTorch tensors and I can't perform operations directly on them
 #     pitch = pitch.clone().detach().float()
 #     yaw = yaw.clone().detach().float()
 
@@ -81,13 +78,13 @@ from omni.isaac.lab_assets import FRANKA_PANDA_HIGH_PD_CFG  # isort:skip
 #     return torch.tensor([w, x, y, z], dtype=torch.float32)
 
 
-def euler_to_quaternion(roll, pitch, yaw):    #DA DECOMMENTARE
+def euler_to_quaternion(roll, pitch, yaw):    #TO UNCOMMENT
     """
     Convert Euler angles (roll, pitch, yaw) to a quaternion using PyTorch.
     """
 
     # Convert input angles to tensors
-    roll = torch.tensor(roll)     #devo usare clone().detach() perchè roll,pitch e yaw sono tensori di PyTorch e non posso fare operazioni direttamente su di essi
+    roll = torch.tensor(roll)     #I need to use clone().detach() because roll,pitch and yaw are PyTorch tensors and I can't perform operations directly on them
     pitch = torch.tensor(pitch)
     yaw = torch.tensor(yaw)
 
@@ -114,17 +111,17 @@ def quaternion_to_euler(quaternion):
     """
     w,x,y,z = quaternion
 
-    # Calcola il roll (x-axis rotation)
+    # Calculate roll (x-axis rotation)
     sinr_cosp = 2 * (w * x + y * z)
     cosr_cosp = 1 - 2 * (x * x + y * y)
     roll = torch.atan2(sinr_cosp, cosr_cosp)
 
-    # Calcola il pitch (y-axis rotation)
+    # Calculate pitch (y-axis rotation)
     sinp = 2 * (w * y - z * x)
-    # Per evitare valori fuori dal dominio di asin, bisogna limitare sinp tra -1 e 1
+    # To avoid values outside the asin domain, we need to clamp sinp between -1 and 1
     pitch = torch.asin(torch.clamp(sinp, -1.0, 1.0))
 
-    # Calcola il yaw (z-axis rotation)
+    # Calculate yaw (z-axis rotation)
     siny_cosp = 2 * (w * z + x * y)
     cosy_cosp = 1 - 2 * (y * y + z * z)
     yaw = torch.atan2(siny_cosp, cosy_cosp)
@@ -141,277 +138,15 @@ def convert_goals_to_quaternion(ee_goals_eul):
     for goal in ee_goals_eul:
         pos = goal[:3]  # x, y, z position
         rot = euler_to_quaternion(goal[3], goal[4], goal[5])  # convert Euler angles to quaternion
-        # coord= torch.cat((pos,rot))    #DA DECOMMENTARE
+        # coord= torch.cat((pos,rot))    #TO UNCOMMENT
 
         # Exclude the gripper state and only append position and quaternion
-        ee_goals_quat.append(pos + rot.tolist())  #DA DECOMMENTARE
-        # ee_goals_quat.append(coord.tolist())   #DA DECOMMENTARE
+        ee_goals_quat.append(pos + rot.tolist())  #TO UNCOMMENT
+        # ee_goals_quat.append(coord.tolist())   #TO UNCOMMENT
         
     return ee_goals_quat
 
-
-
-@configclass
-class TableTopSceneCfg(InteractiveSceneCfg):
-
-
-    # ground plane
-    ground = AssetBaseCfg(
-        prim_path="/World/defaultGroundPlane",
-        spawn=sim_utils.GroundPlaneCfg(),
-        init_state=AssetBaseCfg.InitialStateCfg(pos=(0, 0.0, -1.05))
-    )
- 
-
-    # lights
-    dome_light = AssetBaseCfg(
-        prim_path="/World/Light", spawn=sim_utils.DomeLightCfg(intensity=3000.0, color=(0.75, 0.75, 0.75))
-    )
-
-    # mount
-    table = AssetBaseCfg(
-        prim_path="{ENV_REGEX_NS}/Table",
-        init_state=AssetBaseCfg.InitialStateCfg(pos=[0.5, 0, 0], rot=[0.707, 0, 0, 0.707]),
-        spawn=sim_utils.UsdFileCfg(
-            usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/Mounts/SeattleLabTable/table_instanceable.usd", scale=(1.65, 1.80, 1)
-        ),
-    )
-
-    # #container
-    # container = RigidObjectCfg(
-    #     prim_path="{ENV_REGEX_NS}/Container",
-    #     spawn=sim_utils.UsdFileCfg(
-    #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/container.usd", 
-    #         scale=(0.01, 0.01, 0.01),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
-    #         rigid_props=sim_utils.RigidBodyPropertiesCfg(),
-    #         mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
-    #         collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=True),
-    #         visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.8, 0.75, 0.75)),
-    #     ),
-    #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.3, 0.3, 0.1), rot=(0.0, 0.0, 1.0, 1.0)),
-    # )
-
-
-
-    #glass
-    glass = RigidObjectCfg(
-        prim_path="{ENV_REGEX_NS}/Glass",
-        spawn=sim_utils.UsdFileCfg(
-            usd_path="/home/jonatha/IsaacLab/usd_files_mattia/glass.usd", 
-            scale=(0.01, 0.01, 0.01),
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(
-                solver_position_iteration_count=16,
-                solver_velocity_iteration_count=1,
-                max_angular_velocity=1000.0,
-                max_linear_velocity=1000.0,
-                max_depenetration_velocity=5.0,
-                disable_gravity=False,
-            ),
-        ),
-        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.4, 0.4, 1), rot=(0.0, 0.0, 1.0, 1.0)),
-    )
-
-    #cylinder
-    cylinder = RigidObjectCfg(
-        prim_path="{ENV_REGEX_NS}/Cylinder",
-        spawn=sim_utils.UsdFileCfg(
-            usd_path="/home/jonatha/IsaacLab/usd_files_mattia/cylinder.usd", 
-            scale=(0.1, 0.1, 0.1),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(),
-            # mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
-            collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=True),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.8, 0.75, 0.75)),
-        ),
-        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.3, 0.3, 0.4)),
-    )
-
-
-    #cubo
-    cubo = RigidObjectCfg(
-        prim_path="{ENV_REGEX_NS}/Cubo",
-        spawn=sim_utils.UsdFileCfg(
-            usd_path="/home/jonatha/IsaacLab/usd_files_mattia/cube.usd", 
-            scale=(0.0006, 0.0006, 0.0006),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(
-                solver_position_iteration_count=16,
-                solver_velocity_iteration_count=1,
-                max_angular_velocity=1000.0,
-                max_linear_velocity=1000.0,
-                max_depenetration_velocity=5.0,
-                disable_gravity=False,
-            ),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(1.0, 0.0, 0.0)),
-        ),
-        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.5, 0.25, 0.1)),
-    )
-
-    #tovaglietta
-    tovaglietta = RigidObjectCfg(
-        prim_path="{ENV_REGEX_NS}/Tovaglietta",
-        spawn=sim_utils.UsdFileCfg(
-            usd_path="/home/jonatha/IsaacLab/usd_files_mattia/parallelepipedo.usd", 
-            scale=(0.35, 0.35, 0.0015),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(
-                solver_position_iteration_count=16,
-                solver_velocity_iteration_count=1,
-                max_angular_velocity=1000.0,
-                max_linear_velocity=1000.0,
-                max_depenetration_velocity=5.0,
-                disable_gravity=False,
-            ),
-            # mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
-            collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=True),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.647, 0.165, 0.165)),
-        ),
-        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.55, -0.35, 0.1), rot=(0.0, 0.0, 0.0, 1.0)),
-    )
-
-    #Forchetta
-    forchetta = RigidObjectCfg(
-        prim_path="{ENV_REGEX_NS}/Forchetta",
-        spawn=sim_utils.UsdFileCfg(
-            usd_path="/home/jonatha/IsaacLab/usd_files_mattia/fork.usd", 
-            scale=(0.01, 0.01, 0.01),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(
-                solver_position_iteration_count=16,
-                solver_velocity_iteration_count=1,
-                max_angular_velocity=1000.0,
-                max_linear_velocity=1000.0,
-                max_depenetration_velocity=5.0,
-                disable_gravity=False,
-            ),
-            # mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
-            collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=True),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.8, 0.75, 0.75)),
-        ),
-        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.3, 0.0, 0.2), rot=(0.707, 0.707, 0.707, 0.707)),    #manca da ruotare di 90 gradi la forchetta 
-    )
-
-    #Coltello
-    coltello = RigidObjectCfg(
-        prim_path="{ENV_REGEX_NS}/Coltello",
-        spawn=sim_utils.UsdFileCfg(
-            usd_path="/home/jonatha/IsaacLab/usd_files_mattia/coltello.usd", 
-            scale=(0.01, 0.01, 0.01),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(
-                solver_position_iteration_count=16,
-                solver_velocity_iteration_count=1,
-                max_angular_velocity=1000.0,
-                max_linear_velocity=1000.0,
-                max_depenetration_velocity=5.0,
-                disable_gravity=False,
-            ),
-            # mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
-            collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=True),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.8, 0.75, 0.75)),
-        ),
-        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.75, -0.35, 0.2), rot=(0.0, 0.0, -0.707, 0.707)),    #manca da ruotare di 90 gradi la forchetta 
-    )
-
-    #porta_forchetta
-    porta_forchetta = RigidObjectCfg(
-        prim_path="{ENV_REGEX_NS}/Porta_forchetta",
-        spawn=sim_utils.UsdFileCfg(
-            usd_path="/home/jonatha/IsaacLab/usd_files_mattia/cylinder.usd", 
-            scale=(0.15, 0.15, 0.01),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(),
-            # mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
-            collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=True),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.8, 0.75, 0.75)),
-        ),
-        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.3, 0.0, 0.1)),
-    )
-
-    #Piatto_1
-    piatto_1 = RigidObjectCfg(
-        prim_path="{ENV_REGEX_NS}/Piatto_1",
-        spawn=sim_utils.UsdFileCfg(
-            usd_path="/home/jonatha/IsaacLab/usd_files_mattia/plate.usd", 
-            scale=(0.008, 0.008, 0.008),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(
-                solver_position_iteration_count=16,
-                solver_velocity_iteration_count=1,
-                max_angular_velocity=1000.0,
-                max_linear_velocity=1000.0,
-                max_depenetration_velocity=5.0,
-                disable_gravity=False,
-            ),
-            # mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
-            collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=True),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.647, 0.165, 0.165)),
-        ),
-        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.6, 0.0, 0.3), rot=(0.0, 0.0, 1.0, 1.0)),
-    )
-
-
-    #METTERE A POSTO GLI USDZ FILES 
-
-    # #martello
-    # hammer = RigidObjectCfg(
-    #     prim_path="{ENV_REGEX_NS}/martello",
-    #     spawn=sim_utils.UsdFileCfg(
-    #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/hammer.usd", 
-    #         scale=(0.008, 0.008, 0.008),    
-    #     ),
-    #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.7, -0.4, 0.1), rot=(0.0, 0.0, 1.0, 1.0)),
-    # )
-
-    # Franka Panda robot
-    robot = FRANKA_PANDA_HIGH_PD_CFG.replace(
-        prim_path="{ENV_REGEX_NS}/Robot"
-    )
-
-    # camera
-    camera = CameraCfg(
-        prim_path="{ENV_REGEX_NS}/Robot/front_cam",
-        update_period=0.1,
-        height=480,
-        width=640,
-        data_types=["rgb", "distance_to_image_plane"],
-        spawn=sim_utils.PinholeCameraCfg(
-            focal_length=24, 
-            focus_distance=400.0, 
-            horizontal_aperture=30,  # Aumentare l'apertura orizzontale per un campo visivo più ampio
-            clipping_range=(0.1, 1.0e5)
-        ),
-        offset=CameraCfg.OffsetCfg(
-            pos=(1.27, 0.0, 0.8),  
-            rot=(1.0, 0.2, 0.2, 0.7), 
-            convention="opengl",
-        ),
-    )
-
-    camera_hand = CameraCfg(
-        prim_path="{ENV_REGEX_NS}/Robot/panda_hand/hand_cam",
-        update_period=0.1,
-        height=480,
-        width=640,
-        data_types=["rgb", "distance_to_image_plane"],
-        spawn=sim_utils.PinholeCameraCfg(
-            focal_length=24.0, focus_distance=400.0, horizontal_aperture=20.955, clipping_range=(0.1, 1.0e5)
-        ),
-        offset=CameraCfg.OffsetCfg(
-            pos=(0.05, 0.0, 0.0), rot=(0.0, 1.0, 1.0, 0), convention="opengl"
-        ),
-    )
-
-    camera_side_bridge = CameraCfg(
-        prim_path="{ENV_REGEX_NS}/Table/side_cam_Bridge",
-        update_period=0.1,
-        height=480,
-        width=640,
-        data_types=["rgb", "distance_to_image_plane"],
-        spawn=sim_utils.PinholeCameraCfg(
-            focal_length=15.0, focus_distance=400.0, horizontal_aperture=20.955, clipping_range=(0.1, 1.0e5)
-        ),
-        offset=CameraCfg.OffsetCfg(
-            pos=(-0.3, 0.3, 0.5),  
-            rot=(0.5, 0.3, -0.6, -1.0),
-            convention="opengl",
-        ),
-    )
-
-# la posizione della camera di DROID deve essere randomized quindi la possiamo decidere noi (in teoria però rimane sempre una side camera)
+# The position of the DROID camera should be randomized so we can decide it (though in theory it remains a side camera)
 #     camera_side_DROID = CameraCfg(
 #     prim_path="{ENV_REGEX_NS}/Table/side_cam_DROID",
 #     update_period=0.1,
@@ -436,7 +171,7 @@ def get_gripper_joint_ids(robot, gripper_joint_names):
     :return: List of joint IDs.
     """
     gripper_joint_ids = []
-    joint_names = robot.joint_names  # Ottenere i nomi dei giunti
+    joint_names = robot.joint_names  # Get joint names
     for joint_name in gripper_joint_names:
         if joint_name in joint_names:
             gripper_joint_ids.append(joint_names.index(joint_name))
@@ -451,21 +186,20 @@ def set_gripper_state(robot, gripper_state):
     gripper_joint_names = ['panda_finger_joint1', 'panda_finger_joint2']
     gripper_joint_ids = get_gripper_joint_ids(robot, gripper_joint_names)
 
-    # Mappa lo stato del gripper a valori di comando per i giunti
-    # Approxima il gripper_state all'intero più vicino
+    # Map gripper state to joint command values
+    # Round gripper_state to nearest integer
     gripper_command = round(gripper_state)  
-    gripper_command = 1 if gripper_command == 0 else 0  # 1 per chiuso, 0 per aperto
+    gripper_command = 1 if gripper_command == 0 else 0  # 1 for closed, 0 for open
 
     gripper_commands = [gripper_command] * len(gripper_joint_ids)
 
-       # Converti i comandi in un tensor di PyTorch e trasferiscilo sulla GPU se necessario
+    # Convert commands to PyTorch tensor and move to GPU if needed
     gripper_commands_tensor = torch.tensor(gripper_commands, dtype=torch.float32, device='cuda')
 
-    # Imposta i target di posizione dei giunti del gripper
+    # Set gripper joint position targets
     robot.set_joint_position_target(gripper_commands_tensor, joint_ids=gripper_joint_ids)
 
-
-# Specifica la directory di salvataggio
+# Define the save directory
 save_dir = "saved_images"
 os.makedirs(save_dir, exist_ok=True)
 
@@ -475,57 +209,19 @@ def save_image(rgb, depth, index):
     torch.save(rgb, rgb_path)
     torch.save(depth, depth_path)
 
+# Here I need to put the predicted actions from RT1
+# ee_goals = [
+#     [0.5, 0.5, 0.7, 0.707, 0, 0.707, 0.0],
+#     [0.5, -0.4, 0.6, 0.707, 0.707, 0.0, 0.0],
+#     [0.5, 0, 0.5, 0.0, 1.0, 0.0, 0.0],
+#     ]
 
-def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
-    """Runs the simulation loop."""
-    # Extract scene entities
-    # note: we only do this here for readability.
-    robot = scene["robot"]
-    # camera=scene["camera"]
-
-    # Create controller
-    diff_ik_cfg = DifferentialIKControllerCfg(command_type="pose", use_relative_mode=False, ik_method="dls")
-    diff_ik_controller = DifferentialIKController(diff_ik_cfg, num_envs=scene.num_envs, device=sim.device)
-
-    # Markers
-    frame_marker_cfg = FRAME_MARKER_CFG.copy()
-    frame_marker_cfg.markers["frame"].scale = (0.1, 0.1, 0.1)
-    ee_marker = VisualizationMarkers(frame_marker_cfg.replace(prim_path="/Visuals/ee_current"))
-    goal_marker = VisualizationMarkers(frame_marker_cfg.replace(prim_path="/Visuals/ee_goal"))
-
-    # # Listens to the required transforms
-    # frame_marker_cfg = FRAME_MARKER_CFG.copy()
-    # frame_marker_cfg.markers["frame"].scale = (0.1, 0.1, 0.1)
-    # goal_marker = VisualizationMarkers(frame_marker_cfg.replace(prim_path="/Visuals/ee_goal"))
-    # ee_marker = FrameTransformerCfg(
-    #     prim_path="{ENV_REGEX_NS}/Robot/panda_link0",
-    #     debug_vis=False,
-    #     visualizer_cfg=frame_marker_cfg,
-    #     target_frames=[
-    #         FrameTransformerCfg.FrameCfg(
-    #             prim_path="{ENV_REGEX_NS}/Robot/panda_hand",
-    #             name="end_effector",
-    #             offset=OffsetCfg(
-    #                 pos=[0.0, 0.0, 0.1034],
-    #             ),
-    #         ),
-    #     ],
-    # )
-
-
-    # Define goals for the arm  #qui devo mettere le prdicted actiions di RT1
-    # ee_goals = [
-    #     [0.5, 0.5, 0.7, 0.707, 0, 0.707, 0.0],
-    #     [0.5, -0.4, 0.6, 0.707, 0.707, 0.0, 0.0],
-    #     [0.5, 0, 0.5, 0.0, 1.0, 0.0, 0.0],
-    #     ]
-
-    # vettore dei goal rappresentato nella forma corretta per essere utilizzato con RT1-X 
-    # ee_goals_eul = [
-    #     [0.4, 0.3, 0.7, torch.pi / 2, 0, torch.pi / 2, 1.0],
-    #     [0.4, -0.3, 0.6, torch.pi / 2, torch.pi / 2, 0.0, 1.0],
-    #     [0.7, 0, 0.5, 0, torch.pi / 2, 0.0, -1.0],
-    # ]
+# Goal vector represented in the correct format to be used with RT1-X 
+# ee_goals_eul = [
+#     [0.4, 0.3, 0.7, torch.pi / 2, 0, torch.pi / 2, 1.0],
+#     [0.4, -0.3, 0.6, torch.pi / 2, torch.pi / 2, 0.0, 1.0],
+#     [0.7, 0, 0.5, 0, torch.pi / 2, 0.0, -1.0],
+# ]
 
     ee_goals_eul = [
         [0.3100048005580902, 0.13334313035011292, 0.4775620698928833, 3.092672824859619, 0.1832459717988968, 0.024089191108942032, 0.0],
@@ -711,14 +407,11 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
         [0.46455830335617065, -0.07337307184934616, 0.28968754410743713, 3.1160948276519775, -0.4138264060020447, -0.4358503520488739, 0.0],
     ]
 
-    # with open('trajectory_proof/franka_mio_gt_observation_target.json', 'r') as file:
+      # with open('trajectory_proof/franka_mio_gt_observation_target.json', 'r') as file:
     #     data = json.load(file)
     #     traj = data['trajectory']
     
     # ee_goals_eul=torch.tensor(traj, dtype=torch.float32)
-
-
-   
 
     ##
 
@@ -735,7 +428,6 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
     # Specify robot-specific parameters
     robot_entity_cfg = SceneEntityCfg("robot", joint_names=["panda_joint.*"], body_names=["panda_hand"])
 
-
     # Resolving the scene entities
     robot_entity_cfg.resolve(scene)
 
@@ -750,7 +442,6 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
     joint_vel = robot.data.default_joint_vel.clone()
     robot.write_joint_state_to_sim(joint_pos, joint_vel)
 
-
     # Simulation loop
     while simulation_app.is_running():
         # reset                          
@@ -762,7 +453,6 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
             # joint_vel = robot.data.default_joint_vel.clone()
             # robot.write_joint_state_to_sim(joint_pos, joint_vel)
 
-
             # robot.reset()
             # reset actions
             ik_commands[:] = ee_goals[current_goal_idx]
@@ -773,14 +463,12 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
             # change goal
             current_goal_idx = (current_goal_idx + 1) % len(ee_goals)
 
-            # Recuperare i dati dalla telecamera
+            # Get camera data
             rgb_image = scene["camera"].data.output["rgb"].clone().detach()
             depth_image = scene["camera"].data.output["distance_to_image_plane"].clone().detach()
 
-            # # Salva l'immagine quando il target è raggiunto
+            # # Save image when target is reached
             # save_image(rgb_image.cpu(), depth_image.cpu(), current_goal_idx)
-            
-
             
         else:
             # obtain quantities from simulation
@@ -795,21 +483,20 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
             # compute the joint commands
             joint_pos_des = diff_ik_controller.compute(ee_pos_b, ee_quat_b, jacobian, joint_pos)
 
-            """ Sezione che serve solo a capire che tipologia di coordinate usa lo script """
+            """ Section only needed to understand what coordinate system the script uses """
 
-            # print("1",ee_pos_b)  #questo è il reference frame relativo dell'end-effector rispetto alla base del robot e siccome il robot è nell'origine assoluta non ci sarà differenza tra ee_pose_w e ee_pos_b
-            # print("2",ee_pose_w[:, 0:3]) #questo è il reference frame assoluto dell'end-effector cioè rispetto al punto (0,0,0) (cioè root_pose_w)
-            # print("3",root_pose_w[:, 0:3])  # questo è il reference frame assoluto dell'origine e cioè (0,0,0)
-            # # i due tensori sono uguali in quanto la posizione assoluta e quella relativa dell'end-effector coincidono poichè il robot è posizionato esattamente in (0,0,0) 
+            # print("1",ee_pos_b)  # This is the end-effector's relative reference frame to the robot base, and since the robot is at the absolute origin, there will be no difference between ee_pose_w and ee_pos_b
+            # print("2",ee_pose_w[:, 0:3]) # This is the end-effector's absolute reference frame relative to point (0,0,0) (i.e., root_pose_w)
+            # print("3",root_pose_w[:, 0:3])  # This is the absolute reference frame of the origin, i.e. (0,0,0)
+            # # The two tensors are equal because the absolute and relative positions of the end-effector coincide since the robot is positioned exactly at (0,0,0)
             # print("4",ee_quat_b[:,1]) 
             # print("5",ee_quat_b[0])
 
             # ee_euler_angle_b=quaternion_to_euler(ee_quat_b[0])
             # print("5",ee_euler_angle_b)
 
-            # #FACCIO TUTTO DENTRO ALL'ELSE PERCHE' TANTO MI INTERESSANO SOLO LE COORDINATE DI PARTENZA DELL'END-EFFECTOR
+            # # I DO EVERYTHING INSIDE THE ELSE BECAUSE I ONLY CARE ABOUT THE STARTING COORDINATES OF THE END-EFFECTOR
          
-
         # apply actions
         robot.set_joint_position_target(joint_pos_des, joint_ids=robot_entity_cfg.joint_ids)
 
@@ -840,9 +527,6 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
         # print("Received shape of rgb   image: ", scene["camera"].data.output["rgb"].shape)
         # print("Received shape of depth image: ", scene["camera"].data.output["distance_to_image_plane"].shape)
         # print("-------------------------------")
-    
-
-
 
 def main():
     """Main function."""
@@ -861,13 +545,11 @@ def main():
     # Run the simulator
     run_simulator(sim, scene)
 
-
 if __name__ == "__main__":
     # run the main function
     main()
     # close sim app
     simulation_app.close()
-
 
 
 

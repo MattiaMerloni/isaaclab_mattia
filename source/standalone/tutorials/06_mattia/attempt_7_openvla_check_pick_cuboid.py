@@ -1,9 +1,6 @@
-
-
-
 '''    ./isaaclab.sh -p source/standalone/tutorials/06_mattia/attempt_7_openvla_check_pick_cuboid.py  --num_envs 1  '''
 
-""" SCRIPT PER IL CHECK DEL MODELLO OPENVLA"""
+""" SCRIPT TO CHECK THE OPENVLA MODEL """
 
 import argparse
 
@@ -22,7 +19,6 @@ args_cli = parser.parse_args()
 app_launcher = AppLauncher(args_cli)
 simulation_app = app_launcher.app
 
-
 import torch
 import os
 import json
@@ -40,19 +36,16 @@ from omni.isaac.lab.utils.math import subtract_frame_transforms
 from omni.isaac.lab.sensors import CameraCfg, FrameTransformerCfg
 from omni.isaac.lab.sensors.frame_transformer.frame_transformer_cfg import OffsetCfg
 
-
 from omni.isaac.lab_assets import FRANKA_PANDA_HIGH_PD_CFG  # FRANKA_PANDA_HIGH_PD_CFG
 
-
-
-# questa funzione mi servirà quando gli darò in input le azioni predette da RT1
-def euler_to_quaternion(roll, pitch, yaw):    # DA USARE QUANDO USI UN FILE.json  #DA DECOMMENTARE
+# This function will be useful when I input actions predicted by RT1
+def euler_to_quaternion(roll, pitch, yaw):    # TO USE WHEN USING A .json FILE  #UNCOMMENT
     """
     Convert Euler angles (roll, pitch, yaw) to a quaternion using PyTorch.
     """
 
     # Convert input angles to tensors
-    roll = roll.clone().detach().float()      #devo usare clone().detach() perchè roll,pitch e yaw sono tensori di PyTorch e non posso fare operazioni direttamente su di essi
+    roll = roll.clone().detach().float()      #I need to use clone().detach() because roll,pitch and yaw are PyTorch tensors and I can't perform operations directly on them
     pitch = pitch.clone().detach().float()
     yaw = yaw.clone().detach().float()
 
@@ -72,57 +65,28 @@ def euler_to_quaternion(roll, pitch, yaw):    # DA USARE QUANDO USI UN FILE.json
 
     return torch.tensor([w, x, y, z], dtype=torch.float32)
 
-
-# def euler_to_quaternion(roll, pitch, yaw):   # DA USARE SE COPI ED INCOLLI IL TENSORE DIRETTAMENTE SULLO SCRIPT  #DA DECOMMENTARE
-#     """
-#     Convert Euler angles (roll, pitch, yaw) to a quaternion using PyTorch.
-#     """
-
-#     # Convert input angles to tensors
-#     roll = torch.tensor(roll)     #devo usare clone().detach() perchè roll,pitch e yaw sono tensori di PyTorch e non posso fare operazioni direttamente su di essi
-#     pitch = torch.tensor(pitch)
-#     yaw = torch.tensor(yaw)
-
-#     # roll= x, pitch = y, yaw = z
-
-#     cy = torch.cos(yaw * 0.5)
-#     sy = torch.sin(yaw * 0.5)
-#     cp = torch.cos(pitch * 0.5)
-#     sp = torch.sin(pitch * 0.5)
-#     cr = torch.cos(roll * 0.5)
-#     sr = torch.sin(roll * 0.5)
-
-#     w = cr * cp * cy + sr * sp * sy
-#     x = sr * cp * cy - cr * sp * sy
-#     y = cr * sp * cy + sr * cp * sy
-#     z = cr * cp * sy - sr * sp * cy
-
-#     return torch.tensor([w, x, y, z], dtype=torch.float32)
-
-
 def quaternion_to_euler(quaternion):
     """
     Convert a quaternion (x, y, z, w) to Euler angles (roll, pitch, yaw) using PyTorch.
     """
     w,x,y,z = quaternion
 
-    # Calcola il roll (x-axis rotation)
+    # Calculate roll (x-axis rotation)
     sinr_cosp = 2 * (w * x + y * z)
     cosr_cosp = 1 - 2 * (x * x + y * y)
     roll = torch.atan2(sinr_cosp, cosr_cosp)
 
-    # Calcola il pitch (y-axis rotation)
+    # Calculate pitch (y-axis rotation)
     sinp = 2 * (w * y - z * x)
-    # Per evitare valori fuori dal dominio di asin, bisogna limitare sinp tra -1 e 1
+    # To avoid values outside asin's domain, we need to limit sinp between -1 and 1
     pitch = torch.asin(torch.clamp(sinp, -1.0, 1.0))
 
-    # Calcola il yaw (z-axis rotation)
+    # Calculate yaw (z-axis rotation)
     siny_cosp = 2 * (w * z + x * y)
     cosy_cosp = 1 - 2 * (y * y + z * z)
     yaw = torch.atan2(siny_cosp, cosy_cosp)
 
     return torch.tensor([roll, pitch, yaw], dtype=torch.float32)
-
 
 def convert_goals_to_quaternion(ee_goals_eul):
     """
@@ -133,20 +97,16 @@ def convert_goals_to_quaternion(ee_goals_eul):
     for goal in ee_goals_eul:
         pos = goal[:3]  # x, y, z position
         rot = euler_to_quaternion(goal[3], goal[4], goal[5])  # convert Euler angles to quaternion
-        coord= torch.cat((pos,rot))   #DA DECOMMENTARE   #DA USARE CON FILE.json
+        coord= torch.cat((pos,rot))   #UNCOMMENT   #TO USE WITH .json FILE
 
         # Exclude the gripper state and only append position and quaternion
-        # ee_goals_quat.append(pos + rot.tolist())  #DA DECOMMENTARE   # DA USARE CON SCRIPT
-        ee_goals_quat.append(coord.tolist())   #DA DECOMMENTARE  #DA USARE CON FILE.json
+        # ee_goals_quat.append(pos + rot.tolist())  #UNCOMMENT   # TO USE WITH SCRIPT
+        ee_goals_quat.append(coord.tolist())   #UNCOMMENT  #TO USE WITH .json FILE
         
     return ee_goals_quat
 
-
-
 @configclass
 class TableTopSceneCfg(InteractiveSceneCfg):
-
-
     # ground plane
     ground = AssetBaseCfg(
         prim_path="/World/defaultGroundPlane",
@@ -154,7 +114,6 @@ class TableTopSceneCfg(InteractiveSceneCfg):
         init_state=AssetBaseCfg.InitialStateCfg(pos=(0, 0.0, -1.05))
     )
  
-
     # lights
     dome_light = AssetBaseCfg(
         prim_path="/World/Light", spawn=sim_utils.DomeLightCfg(intensity=3000.0, color=(0.75, 0.75, 0.75))
@@ -169,14 +128,13 @@ class TableTopSceneCfg(InteractiveSceneCfg):
         ),
     )
 
-
-    #cubo
+    #cuboid
     cubo = RigidObjectCfg(
         prim_path="{ENV_REGEX_NS}/Cubo",
         init_state=RigidObjectCfg.InitialStateCfg(pos=(0.58, 0.22, 0.1)),
         spawn=sim_utils.UsdFileCfg(
             usd_path="/home/jonatha/IsaacLab/usd_files_mattia/cube.usd",    # "/home/jonatha/IsaacLab/usd_files_mattia/cube.usd"  #f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
-            scale=(0.0006, 0.0006, 0.001),     #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+            scale=(0.0006, 0.0006, 0.001),     #remember that the scale command is relative to the object's reference system, so if we rotate it, x,y and z will be inverted accordingly 
             visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(1.0, 0.0, 0.0)),
             rigid_props=sim_utils.RigidBodyPropertiesCfg(
                 solver_position_iteration_count=16,
@@ -189,19 +147,7 @@ class TableTopSceneCfg(InteractiveSceneCfg):
         ),
     )
 
-    # Ricordati che la posizione del cubo in data5 e data6 è (0.5, 0.25, 0.1)
-
-    # #cup   #DA TESTARE SE IL PROF RITIENE OPPORTUNO 
-    # cup = RigidObjectCfg(
-    #     prim_path="{ENV_REGEX_NS}/Cup",
-    #     spawn=sim_utils.UsdFileCfg(
-    #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/cup.usd", 
-    #         scale=(0.0005, 0.0005, 0.0005),    
-    #     ),
-    #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.7, -0.25, 0.1), rot=(0.0, 0.0, 1.0, 1.0)),
-    # )
-
-
+    # Remember that the cube position in data5 and data6 is (0.5, 0.25, 0.1)
 
     # Franka Panda robot
     robot = FRANKA_PANDA_HIGH_PD_CFG.replace(
@@ -218,7 +164,7 @@ class TableTopSceneCfg(InteractiveSceneCfg):
         spawn=sim_utils.PinholeCameraCfg(
             focal_length=24, 
             focus_distance=400.0, 
-            horizontal_aperture=30,  # Aumentare l'apertura orizzontale per un campo visivo più ampio
+            horizontal_aperture=30,  # Increase horizontal aperture for wider field of view
             clipping_range=(0.1, 1.0e5)
         ),
         offset=CameraCfg.OffsetCfg(
@@ -258,8 +204,6 @@ class TableTopSceneCfg(InteractiveSceneCfg):
         ),
     )
 
-
-
 def get_gripper_joint_ids(robot, gripper_joint_names):
     """
     Retrieve joint IDs for the gripper joints. 
@@ -268,7 +212,7 @@ def get_gripper_joint_ids(robot, gripper_joint_names):
     :return: List of joint IDs.
     """
     gripper_joint_ids = []
-    joint_names = robot.joint_names                                                                          # Ottenere i nomi dei giunti
+    joint_names = robot.joint_names                                                                          # Get joint names
     for joint_name in gripper_joint_names:
         if joint_name in joint_names:
             gripper_joint_ids.append(joint_names.index(joint_name))
@@ -283,28 +227,25 @@ def set_gripper_state(robot, gripper_state):
     gripper_joint_names = ['panda_finger_joint1', 'panda_finger_joint2']
     gripper_joint_ids = get_gripper_joint_ids(robot, gripper_joint_names)
 
-    # It approximates the gripper_state to the nearest integer
+    # Round gripper_state to nearest integer
     gripper_command = round(gripper_state.item())  
-    gripper_command = 1 if gripper_command == 1 else 0  #                                                     il gripper_commnand è settato ad 1 e quindi il gripper è aperto se il gripper_state è -1, altrimenti è chiuso
+    gripper_command = 1 if gripper_command == 1 else 0  # gripper_command is set to 1 (gripper open) if gripper_state is -1, otherwise closed
 
     gripper_commands = [gripper_command] * len(gripper_joint_ids)
 
-    # Convert the commands into a PyTorch tensor and transfer it to the GPU if necessary
+    # Convert commands to PyTorch tensor and transfer to GPU if needed
     gripper_commands_tensor = torch.tensor(gripper_commands, dtype=torch.float32, device='cuda')
 
-    # Set the joint position targets of the gripper
+    # Set gripper joint position targets
     robot.set_joint_position_target(gripper_commands_tensor, joint_ids=gripper_joint_ids)
-
-
 
 def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
     """Runs the simulation loop."""
 
     robot = scene["robot"]
 
-
     # Create controller
-    diff_ik_cfg = DifferentialIKControllerCfg(command_type="pose", use_relative_mode=False, ik_method="dls")    #'dls' sta per dumped least square che descrive il metodo ai minimi quadrati smorzati
+    diff_ik_cfg = DifferentialIKControllerCfg(command_type="pose", use_relative_mode=False, ik_method="dls")    #'dls' stands for damped least squares
     diff_ik_controller = DifferentialIKController(diff_ik_cfg, num_envs=scene.num_envs, device=sim.device)
 
     # Markers
@@ -313,25 +254,7 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
     ee_marker = VisualizationMarkers(frame_marker_cfg.replace(prim_path="/Visuals/ee_current"))
     goal_marker = VisualizationMarkers(frame_marker_cfg.replace(prim_path="/Visuals/ee_goal"))
 
-
-
-
-
-    # # vettore dei goal rappresentato nella forma corretta per essere utilizzato con RT1-X 
-    # ee_goals_eul = [
-    #     [0.4, 0.3, 0.7, torch.pi / 2, 0, torch.pi / 2, 1.0],
-    #     [0.4, -0.3, 0.6, torch.pi / 2, torch.pi / 2, 0.0, 1.0],
-    #     [0.7, 0, 0.5, 0, torch.pi / 2, 0.0, -1.0],
-    # ]
-
-
-    # # TEST PER VERIFICARE LA TRAIETTORIA DEL TELEOP
-    # with open('trajectory/trajectory.json', 'r') as file:
-    #     data = json.load(file)
-    #     traj = data['trajectory_0']
-
-
-    # TEST PER VERIFICARE LA TRAIETTORIA DI OPENVLA 
+    # TEST TO CHECK OPENVLA TRAJECTORY 
     with open('trajectory_data10_no_train.json', 'r') as file:
         data = json.load(file)
         traj = data['trajectory']
@@ -351,7 +274,6 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
     # Specify robot-specific parameters
     robot_entity_cfg = SceneEntityCfg("robot", joint_names=["panda_joint.*"], body_names=["panda_hand"])
 
-
     # Resolving the scene entities
     robot_entity_cfg.resolve(scene)
 
@@ -366,32 +288,20 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
     joint_vel = robot.data.default_joint_vel.clone()
     robot.write_joint_state_to_sim(joint_pos, joint_vel)
 
-
     # Simulation loop
     while simulation_app.is_running():
         # reset                          
         if count % 150 == 0:
             # reset time
             count = 0
-            # reset joint state
-            # joint_pos = robot.data.default_joint_pos.clone() 
-            # joint_vel = robot.data.default_joint_vel.clone()
-            # robot.write_joint_state_to_sim(joint_pos, joint_vel)
-
-
-            # robot.reset()
             # reset actions
-            ik_commands[:] = ee_goals[current_goal_idx]      #qui invece definiamo la posizione dell'end-effector nel cartesian space
-            joint_pos_des = joint_pos[:, robot_entity_cfg.joint_ids].clone()   #qui definiamo il controllo dei joint (che in questo caso sono 7 per il Franka Panda)
+            ik_commands[:] = ee_goals[current_goal_idx]      #here we define the end-effector position in cartesian space
+            joint_pos_des = joint_pos[:, robot_entity_cfg.joint_ids].clone()   #here we define joint control (7 joints for Franka Panda)
 
             # reset controller
-            # diff_ik_controller.reset()
             diff_ik_controller.set_command(ik_commands)
             # change goal
             current_goal_idx = (current_goal_idx + 1) % len(ee_goals)
-
-            
-
             
         else:
             # obtain quantities from simulation
@@ -406,8 +316,6 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
             # compute the joint commands
             joint_pos_des = diff_ik_controller.compute(ee_pos_b, ee_quat_b, jacobian, joint_pos)
 
-
-         
         # apply actions
         robot.set_joint_position_target(joint_pos_des, joint_ids=robot_entity_cfg.joint_ids)
 
@@ -427,50 +335,6 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
         # obtain quantities from simulation
         ee_pose_w = robot.data.body_state_w[:, robot_entity_cfg.body_ids[0], 0:7]
 
-        ## per stampare la pose dell'end-effector
-        # print(f"ee_pose_w: {ee_pose_w}")
-        # print("---------------------------------")
-
         # update marker positions
         ee_marker.visualize(ee_pose_w[:, 0:3], ee_pose_w[:, 3:7])
-        goal_marker.visualize(ik_commands[:, 0:3] + scene.env_origins, ik_commands[:, 3:7])
-
-    
-
-
-
-def main():
-    """Main function."""
-    # Load kit helper
-    sim_cfg = sim_utils.SimulationCfg(dt=0.01)
-    sim = sim_utils.SimulationContext(sim_cfg)
-    # Set main camera
-    sim.set_camera_view([2.5, 2.5, 2.5], [0.0, 0.0, 0.0])
-    # Design scene
-    scene_cfg = TableTopSceneCfg(num_envs=args_cli.num_envs, env_spacing=2.0)
-    scene = InteractiveScene(scene_cfg)
-    # Play the simulator
-    sim.reset()
-    # Now we are ready!
-    print("[INFO]: Setup complete...")
-    # Run the simulator
-    run_simulator(sim, scene)
-
-
-if __name__ == "__main__":
-    # run the main function
-    main()
-    # close sim app
-    simulation_app.close()
-
-
-
-
-
-
-
-
-
-
-
-
+        goal_marker.visualize(ik_commands[:, 0:3] + scene.env_origins, ik_commands[:, 3:

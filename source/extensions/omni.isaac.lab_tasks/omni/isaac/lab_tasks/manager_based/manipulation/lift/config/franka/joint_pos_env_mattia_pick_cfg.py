@@ -78,12 +78,12 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
             
         # )
 
-        # # A 0.8 DI x IL CUBO NON E' PIU' RAGGIUNGIBILE DAL BRACCIO DEL FRANKA
-        # # A 0.5 DI y IL CUBO NON E' PIU' RAGGIUNGIBILE DAL BRACCIO DEL FRANKA
-        # # BISOGNA STARE TRA 0.7 E 0.3 DI x E TRA +- 0.25 DI y PER ESSERE SICURI DI POTER SEMPRE RAGGIUNGERE IL CUBO CON IL FRANKA 
+        # # At 0.8 of x the cube is no longer reachable by the franka arm
+        # # At 0.5 of y the cube is no longer reachable by the franka arm
+        # # We need to stay between 0.7 and 0.3 of x and between +- 0.25 of y to be sure to always reach the cube with the franka arm
 
-        # #ATTENTO A COME SALVI I FILE USD PERCHE' SE LI TRASLI PRIMA DI SALVARLI OTTERRAI UNA POSIZIONE DIFFERENTE TRA LO SCRIPT DELLA TELEOPERATION E QUELLO DELLA INVERSE KINEMATIC 
-        # #CONTROLLA TUTTI GLI ALTRI FILE SALVATI ALL'INTERNO DELLA CARTELLA "usd_files_mattia" PER ESSERE SICURO CHE SIANO SALVATI CORRETTAMENTE
+        # #BE CAREFUL HOW YOU SAVE THE USD FILES BECAUSE IF YOU MOVE THEM BEFORE
+        # # check all the other files saved inside the "usd_files_mattia" folder to be sure they are saved correctly
 
         #banana test 
         self.scene.object_2 = RigidObjectCfg(
@@ -91,7 +91,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
             init_state=RigidObjectCfg.InitialStateCfg(pos=(0.4, -0.2, 0.1), rot=(0.0, 0.0, 1.0, 1.0)),
             spawn=sim_utils.UsdFileCfg(
                 usd_path="/home/jonatha/IsaacLab/usd_files_mattia/banana.usd",    # "/home/jonatha/IsaacLab/usd_files_mattia/cube.usd"  #f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
-                scale=(0.0006, 0.0006, 0.0006),     #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+                scale=(0.0006, 0.0006, 0.0006),     #remember that the scale command is taken with respect to the object's relative reference system so if we rotate it x, y and z will invert accordingly
                 rigid_props=sim_utils.RigidBodyPropertiesCfg(
                     solver_position_iteration_count=16,
                     solver_velocity_iteration_count=1,
@@ -110,7 +110,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
             init_state=RigidObjectCfg.InitialStateCfg(pos=(0.442, 0.25, 0.1),rot=(0.0, 0.0, 0.0, 1.0)),
             spawn=sim_utils.UsdFileCfg(
                 usd_path="/home/jonatha/IsaacLab/usd_files_mattia/coke_can.usd",    # "/home/jonatha/IsaacLab/usd_files_mattia/cube.usd"  #f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd"
-                scale=(0.0004, 0.0004, 0.0004),     #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza
+                scale=(0.0004, 0.0004, 0.0004),     
                 rigid_props=sim_utils.RigidBodyPropertiesCfg(
                     solver_position_iteration_count=16,
                     solver_velocity_iteration_count=1,
@@ -125,14 +125,14 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
 
 
 
-        #TENTATIVI PASSATI
+        #Past attempts
 
         # #tovaglietta
         # self.scene.object_4 = RigidObjectCfg(
         #     prim_path="{ENV_REGEX_NS}/Tovaglietta",
         #     spawn=sim_utils.UsdFileCfg(
         #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/parallelepipedo.usd", 
-        #         scale=(0.35, 0.35, 0.0015),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+        #         scale=(0.35, 0.35, 0.0015),    
         #         rigid_props=sim_utils.RigidBodyPropertiesCfg(
         #             solver_position_iteration_count=16,
         #             solver_velocity_iteration_count=1,
@@ -153,7 +153,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     prim_path="{ENV_REGEX_NS}/Forchetta",
         #     spawn=sim_utils.UsdFileCfg(
         #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/fork.usd", 
-        #         scale=(0.01, 0.01, 0.01),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+        #         scale=(0.01, 0.01, 0.01),   
         #         rigid_props=sim_utils.RigidBodyPropertiesCfg(
         #             solver_position_iteration_count=16,
         #             solver_velocity_iteration_count=1,
@@ -166,7 +166,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #         collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=True),
         #         visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.647, 0.165, 0.165)),
         #     ),
-        #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.3, 0.0, 0.2), rot=(0.0, 0.707, -0.707, 0.0)),    #manca da ruotare di 90 gradi la forchetta 
+        #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.3, 0.0, 0.2), rot=(0.0, 0.707, -0.707, 0.0)),   
         # )
 
         # #Coltello
@@ -174,7 +174,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     prim_path="{ENV_REGEX_NS}/Coltello",
         #     spawn=sim_utils.UsdFileCfg(
         #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/coltello.usd", 
-        #         scale=(0.01, 0.01, 0.01),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+        #         scale=(0.01, 0.01, 0.01),   
         #         rigid_props=sim_utils.RigidBodyPropertiesCfg(
         #             solver_position_iteration_count=16,
         #             solver_velocity_iteration_count=1,
@@ -187,7 +187,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #         collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=True),
         #         visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.8, 0.75, 0.75)),
         #     ),
-        #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.75, -0.35, 0.2), rot=(0.0, 0.0, -0.707, 0.0)),    #manca da ruotare di 90 gradi la forchetta 
+        #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.75, -0.35, 0.2), rot=(0.0, 0.0, -0.707, 0.0)),   
         # )
 
         # #porta_forchetta
@@ -195,7 +195,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     prim_path="{ENV_REGEX_NS}/Porta_forchetta",
         #     spawn=sim_utils.UsdFileCfg(
         #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/cylinder.usd", 
-        #         scale=(0.15, 0.15, 0.01),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+        #         scale=(0.15, 0.15, 0.01),    
         #         rigid_props=sim_utils.RigidBodyPropertiesCfg(),
         #         mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
         #         collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=True),
@@ -209,7 +209,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     prim_path="{ENV_REGEX_NS}/Piatto_1",
         #     spawn=sim_utils.UsdFileCfg(
         #         usd_path="/home/jonatha/IsaacLab/usd_files_mattia/plate.usd", 
-        #         scale=(0.008, 0.008, 0.008),    #ricorda che il comando scale è preso rispetto al sistema di riferimento relativo dell'oggetto quindi se lo ruotiamo x,y e z si invertiranno di coseguenza 
+        #         scale=(0.008, 0.008, 0.008),   
         #         rigid_props=sim_utils.RigidBodyPropertiesCfg(
         #             solver_position_iteration_count=16,
         #             solver_velocity_iteration_count=1,
@@ -225,7 +225,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     init_state=RigidObjectCfg.InitialStateCfg(pos=(0.6, 0.0, 0.3), rot=(0.0, 0.0, 0.0, 1.0)),
         # )
 
-        ## QUESTA CAMERA NON SERVE PERCHE' NON LA USIAMO
+        ## This camera is not used in the current version of the script
         # # camera
         # self.scene.camera = CameraCfg(
         #     prim_path="{ENV_REGEX_NS}/Robot/front_cam",
@@ -236,11 +236,11 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
         #     spawn=sim_utils.PinholeCameraCfg(
         #         focal_length=24, 
         #         focus_distance=400.0, 
-        #         horizontal_aperture=30,  # Aumentare l'apertura orizzontale per un campo visivo più ampio
+        #         horizontal_aperture=30,  
         #         clipping_range=(0.1, 1.0e5)
         #     ),
         #     offset=CameraCfg.OffsetCfg(
-        #         pos=(1.3, 0.0, 0.5),  # Regolare la posizione per una migliore visione del tavolo
+        #         pos=(1.3, 0.0, 0.5),  
         #         rot=(1.0, 0.4, 0.4, 0.65), 
         #         convention="opengl",
         #     ),
@@ -260,8 +260,7 @@ class FrankaCubeLiftEnvCfg(LiftEnvCfg):
                     prim_path="{ENV_REGEX_NS}/Robot/panda_hand",
                     name="end_effector",
                     offset=OffsetCfg(
-                        pos=(0.0, 0.0, 0.0),    # ATTRAVERSO QUESTO COMANDO POSSO CAMBIARE IL PUNTO DA CUI PRENDO I VALORI DELLA TRAIETTORIA NEL GRIPPER # [0.0, 0.0, 0.1034]
-                        # DEVI DETERMINARE IL VALORE SPERIMENTALE CHE FA COMBACIARE I DUE SCRIPT (per ora va bene [0, -0.028, 0.01]) - era il valore quando il cubo era spawnato male 
+                        pos=(0.0, 0.0, 0.0),    # through this offset we can move the end effector frame
                     ),
                 ),
             ],
